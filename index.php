@@ -1,6 +1,6 @@
 <?php
 
-define("TOKEN", "weixin");
+define("TOKEN", "eternallove");
 $wechatObj = new wechatCallbackapiTest();
 if (isset($_GET['echostr'])) {
     $wechatObj->valid();
