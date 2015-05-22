@@ -87,7 +87,7 @@ function el_response_msg()
     }
     else
     {
-        $post_obj = simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
+        $post_obj = simplexml_load_string($post_str, 'SimpleXMLElement', LIBXML_NOCDATA);
         $msg_type = trim($post_obj->MsgType);
         switch($msg_type)
         {
