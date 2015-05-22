@@ -93,7 +93,7 @@ function el_response_msg()
         {
             case "text":
                 $reply_type = "text";
-                $reply_content = handle_text($post_obj);
+                $reply_content = el_handle_text($post_obj);
                 break;
 /*            case "event":
                 $reply_type = "text";
