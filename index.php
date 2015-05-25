@@ -1,6 +1,9 @@
 <?php
 
 define("TOKEN", "eternal");
+define("AppID", "wx6fa4388ad0b35f13");
+define("EncodingAESKey", "kqGdBlgJGperuJShOfx1Vn166NJR1QweMHh8UsWG7hL");
+require_once('wxBizMsgCrypt.php');
 
 /**
  * Function Name: el_check_signature
@@ -30,11 +33,11 @@ function el_check_signature()
 }
 
 /**
- * Function Name: el_handle_text
- * Description: To handle the text message.
+ * Function Name: el_process_text
+ * Description: To process the text message.
  * @param post_obj the HTTP POST object
  */
-function el_handle_text($post_obj)
+function el_process_text($post_obj)
 {
     $user_msg = trim($post_obj->Content);
     if($user_msg == "time")
@@ -68,9 +71,7 @@ function el_reply_msg($post_obj, $content, $type)
             <FuncFlag>0</FuncFlag>
             </xml>";
     $xml_msg = sprintf($xml_msg_tmp, $from_user, $to_user, $time, $type, $content);
-    
-    /** Reply */
-    echo "$xml_msg";
+    return $xml_msg;
 }
 
 /**
@@ -93,18 +94,20 @@ function el_response_msg()
         {
             case "text":
                 $reply_type = "text";
-                $reply_content = el_handle_text($post_obj);
+                $reply_content = el_process_text($post_obj);
                 break;
 /*            case "event":
                 $reply_type = "text";
-                $reply_content = handle_event($post_obj);
+                $reply_content = el_process_event($post_obj);
                 break; */
             default:
                 $reply_type = "text";
                 $reply_content = "Coming soon ...";
                 break;
         }
-        el_reply_msg($post_obj, $reply_content, $reply_type);
+        $reply_msg = el_reply_msg($post_obj, $reply_content, $reply_type);
+        
+        echo $reply_msg;
         exit (0);
     }
 }
