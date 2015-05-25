@@ -81,6 +81,11 @@ function el_reply_msg($post_obj, $content, $type)
  */
 function el_response_msg()
 {
+    $timestamp = $_GET['timestamp'];
+    $nonce = $_GET["nonce"];
+    $msg_signature = $_GET['msg_signature'];
+    $encrypt_type = (isset($_GET['encrypt_type']) && ($_GET['encrypt_type'] == 'aes')) ? "aes" : "raw";
+    
     $post_str = $GLOBALS["HTTP_RAW_POST_DATA"];
     if(empty($post_str))
     {
@@ -89,6 +94,19 @@ function el_response_msg()
     }
     else
     {
+        if($encrypt_type == 'aes')
+        {
+            /** Decrypt message. */
+            $pc = new WXBizMsgCrypt(TOKEN, EncodingAESKey, AppID);
+            $decrypt_msg = "";
+            $err_code = $pc->DecryptMsg($msg_signature, $timestamp, $nonce, $post_str, $decrypt_msg);
+            if($err_code != 0)
+            {
+                echo $err_code;
+                exit (1);
+            }
+            $post_str = $decrypt_msg;
+        }
         $post_obj = simplexml_load_string($post_str, 'SimpleXMLElement', LIBXML_NOCDATA);
         $msg_type = trim($post_obj->MsgType);
         switch($msg_type)
@@ -108,6 +126,13 @@ function el_response_msg()
         }
         $reply_msg = el_reply_msg($post_obj, $reply_content, $reply_type);
         
+        if($encrypt_type == 'aes')
+        {
+            /** Encrypt reply message. */
+            $encrypt_msg = '';
+            $err_code = $pc->encryptMsg($reply_msg, $timestamp, $nonce, $encrypt_msg);
+            $reply_msg = $encrypt_msg;
+        }
         echo $reply_msg;
         exit (0);
     }
