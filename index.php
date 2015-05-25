@@ -4,7 +4,7 @@ define("TOKEN", "eternal");
 define("AppID", "wx6fa4388ad0b35f13");
 define("EncodingAESKey", "kqGdBlgJGperuJShOfx1Vn166NJR1QweMHh8UsWG7hL");
 
-//require_once('wxBizMsgCrypt.php');
+require_once('wxBizMsgCrypt.php');
 
 /**
  * Function Name: el_check_signature
